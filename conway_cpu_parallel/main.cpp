@@ -6,6 +6,40 @@
 #include <windows.h>
 #include <SDL.h>
 
+// Limit loop rate for visibility
+#define LIMIT_RATE 0
+// Tick-rate in milliseconds (if LIMIT_RATE == 1)
+#define TICK_RATE 50
+
+// Cell map dimensions
+unsigned int cellmap_width = 600;
+unsigned int cellmap_height = 600;
+
+// Width and height (in pixels) of a cell i.e. magnification
+unsigned int cell_size = 1;
+
+SDL_Window *window = NULL;
+SDL_Surface* surface = NULL;
+unsigned int s_width = cellmap_width * cell_size;
+unsigned int s_height = cellmap_height * cell_size;
+
+void DrawCell(unsigned int x, unsigned int y, unsigned int colour)
+{
+    Uint8* pixel_ptr = (Uint8*)surface->pixels + (y * cell_size * s_width + x * cell_size) * 4;
+
+    for (unsigned int i = 0; i < cell_size; i++)
+    {
+        for (unsigned int j = 0; j < cell_size; j++)
+        {
+            *(pixel_ptr + j * 4) = colour;
+            *(pixel_ptr + j * 4 + 1) = colour;
+            *(pixel_ptr + j * 4 + 2) = colour;
+        }
+        pixel_ptr += s_width * 4;
+    }
+}
+
+
 
 int rollCellState(double p1)
 {
@@ -51,8 +85,6 @@ public:
         o << "\n";
         return o;
     }
-
-
 };
 
 
@@ -170,6 +202,7 @@ void Conway::oneStep(int k)
                 {
                     (*this)(y, x) = 1;
                     increaseNeighbourCount(y, x);
+                    DrawCell(y, x, 0xFF); //color the cell on the canvas to white
                     //std::cout << y << " inc " << x << std::endl;
                 }
             }
@@ -179,6 +212,7 @@ void Conway::oneStep(int k)
                 {
                     (*this)(y, x) = 0;
                     decreaseNeighbourCount(y, x);
+                    DrawCell(y, x, 0x00); //color the cell on the canvas to be alive
                     //std::cout << y << " dec " << x << std::endl;
                 }
             }
@@ -203,29 +237,51 @@ void Conway::printNeigh()
 
 int main(int argc, char* argv[])
 {
-    SDL_Init(SDL_INIT_EVERYTHING);
-    std::srand(std::time(0)); // set current time as random seed
-    //Conway cnw(4, 0.5);
-    std::vector<int> v = { 0,0,0,0,0,0,
+
+    //init grid from vector
+    /*std::vector<int> v = { 0,0,0,0,0,0,
                            0,1,1,0,0,0,
                            0,1,1,0,0,0,
                            0,0,0,1,1,0,
                            0,0,0,1,1,0,
-                           0,0,0,0,0,0 };
+                           0,0,0,0,0,0 };*/
 
-    Conway cnw(6, v);
-    std::cout << "\n" << cnw;
-    cnw.printNeigh();
+    Conway cnw(600, 0.5);
 
-    cnw.oneStep(2);
+    SDL_Init(SDL_INIT_VIDEO);
+    window = SDL_CreateWindow("Conway's Game of Life", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, s_width, s_height, SDL_WINDOW_SHOWN);
+    surface = SDL_GetWindowSurface(window);
+    SDL_Event e;
 
-    std::cout << "\n" << cnw;
-    cnw.printNeigh();
+    int generation = 0;
 
-    cnw.oneStep(2);
+    bool quit = false;
+    while (!quit)
+    {
+        while (SDL_PollEvent(&e) != 0)
+            if (e.type == SDL_QUIT) quit = true;
 
-    std::cout << "\n" << cnw;
-    cnw.printNeigh();
+        generation++;
+
+        // Recalculate and draw next generation
+        cnw.oneStep(2);
+        // Update frame buffer
+        SDL_UpdateWindowSurface(window);
+
+    #if LIMIT_RATE
+        SDL_Delay(TICK_RATE);
+    #endif
+    }
+
+    // Destroy window 
+    SDL_DestroyWindow(window);
+    // Quit SDL subsystems 
+    SDL_Quit();
+
+    std::cout << "Total Generations: " << generation << std::endl;
+
+    system("pause");
+
 
     return 0;
 }
