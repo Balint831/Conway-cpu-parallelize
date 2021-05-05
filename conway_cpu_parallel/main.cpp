@@ -3,6 +3,9 @@
 #include <random>
 #include <algorithm>
 #include <ctime>
+#include <windows.h>
+#include <SDL.h>
+
 
 int rollCellState(double p1)
 {
@@ -18,17 +21,17 @@ struct Conway
 private:
     int N;
     std::vector<int> grid; //the cell states are registered on this grid
-    std::vector<int> neighGrid; //number of living neighbours
-    std::vector<int> neighGrid2; //copy of the above table
+    std::vector<int> neighGrid;
+    std::vector<int> neighGrid2;
 
 public:
-    Conway(int n, double p1); //initialize grid by specifying the probability of cell being alive
-    Conway(int n, std::vector<int>& v); //initialize grid explicitly
-    void initNeigh(int y, int x); //initialize neighbour grid
+    Conway(int n, double p1);
+    Conway(int n, std::vector<int>& v);
+    void initNeigh(int y, int x);
     void printNeigh();
-    void increaseNeighbourCount(int y, int x); //add 1 to every neighbouring cell's neigh grid cell
+    void increaseNeighbourCount(int y, int x);
     void decreaseNeighbourCount(int y, int x);
-    void oneStep(int k); //evolving one step in time
+    void oneStep(int k);
 
     int& operator()(int i, int j)
     {
@@ -86,12 +89,13 @@ Conway::Conway(int n, std::vector<int>& v)
 void Conway::initNeigh(int y, int x)
 {
     int neighCount = 0;
+    int xleft, xright, yabove, ybelow;
     //the reason for this section is that the modulo operation in C++ is a mess
-    int xleft = (x == 0) ? N - 1 : x - 1;
-    int xright = (x == (N - 1)) ? 0 : x + 1;
+    xleft = (x == 0) ? N - 1 : x - 1;
+    xright = (x == (N - 1)) ? 0 : x + 1;
 
-    int yabove = (y == 0) ? N - 1 : y - 1;
-    int ybelow = (y == (N - 1)) ? 0 : y + 1;
+    yabove = (y == 0) ? N - 1 : y - 1;
+    ybelow = (y == (N - 1)) ? 0 : y + 1;
 
     neighCount += (*this)(yabove, xleft);
     neighCount += (*this)(yabove, x);
@@ -109,42 +113,46 @@ void Conway::initNeigh(int y, int x)
 
 void Conway::increaseNeighbourCount(int y, int x)
 {
-    int xleft = (x == 0) ? N - 1 : x - 1;
-    int xright = (x == (N - 1)) ? 0 : x + 1;
+    int xleft, xright, yabove, ybelow;
 
-    int yabove = (y == 0) ? N * (N - 1) : N * (y - 1);
-    int ybelow = (y == (N - 1)) ? 0 : N * (y + 1);
+    xleft = (x == 0) ? N - 1 : x - 1;
+    xright = (x == (N - 1)) ? 0 : x + 1;
 
-    neighGrid2[xleft + yabove] += 1;
-    neighGrid2[x + yabove] += 1;
-    neighGrid2[xright + yabove] += 1;
+    yabove = (y == 0) ? N - 1 : y - 1;
+    ybelow = (y == (N - 1)) ? 0 : y + 1;
+
+    neighGrid2[xleft + N * yabove] += 1;
+    neighGrid2[x + N * yabove] += 1;
+    neighGrid2[xright + N * yabove] += 1;
 
     neighGrid2[xleft + N * y] += 1;
     neighGrid2[xright + N * y] += 1;
 
-    neighGrid2[xleft + ybelow] += 1;
-    neighGrid2[x + ybelow] += 1;
-    neighGrid2[xright + ybelow] += 1;
+    neighGrid2[xleft + N * ybelow] += 1;
+    neighGrid2[x + N * ybelow] += 1;
+    neighGrid2[xright + N * ybelow] += 1;
 }
 
 void Conway::decreaseNeighbourCount(int y, int x)
 {
-    int xleft = (x == 0) ? N - 1 : x - 1;
-    int xright = (x == (N - 1)) ? 0 : x + 1;
+    int xleft, xright, yabove, ybelow;
 
-    int yabove = (y == 0) ? N - 1 : y - 1;
-    int ybelow = (y == (N - 1)) ? 0 : y + 1;
+    xleft = (x == 0) ? N - 1 : x - 1;
+    xright = (x == (N - 1)) ? 0 : x + 1;
 
-    neighGrid2[xleft + yabove] -= 1;
-    neighGrid2[x + yabove] -= 1;
-    neighGrid2[xright + yabove] -= 1;
+    yabove = (y == 0) ? N - 1 : y - 1;
+    ybelow = (y == (N - 1)) ? 0 : y + 1;
+
+    neighGrid2[xleft + N * yabove] -= 1;
+    neighGrid2[x + N * yabove] -= 1;
+    neighGrid2[xright + N * yabove] -= 1;
 
     neighGrid2[xleft + N * y] -= 1;
     neighGrid2[xright + N * y] -= 1;
 
-    neighGrid2[xleft + ybelow] -= 1;
-    neighGrid2[x + ybelow] -= 1;
-    neighGrid2[xright + ybelow] -= 1;
+    neighGrid2[xleft + N * ybelow] -= 1;
+    neighGrid2[x + N * ybelow] -= 1;
+    neighGrid2[xright + N * ybelow] -= 1;
 }
 
 void Conway::oneStep(int k)
@@ -193,8 +201,9 @@ void Conway::printNeigh()
 }
 
 
-int main()
+int main(int argc, char* argv[])
 {
+    SDL_Init(SDL_INIT_EVERYTHING);
     std::srand(std::time(0)); // set current time as random seed
     //Conway cnw(4, 0.5);
     std::vector<int> v = { 0,0,0,0,0,0,
@@ -205,6 +214,11 @@ int main()
                            0,0,0,0,0,0 };
 
     Conway cnw(6, v);
+    std::cout << "\n" << cnw;
+    cnw.printNeigh();
+
+    cnw.oneStep(2);
+
     std::cout << "\n" << cnw;
     cnw.printNeigh();
 
