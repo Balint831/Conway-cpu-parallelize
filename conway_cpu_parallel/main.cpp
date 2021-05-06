@@ -5,25 +5,30 @@
 #include <ctime>
 #include <windows.h>
 #include <SDL.h>
+#include <thread>
 
+#define WINDOWING 1
+
+#if WINDOWING
 // Limit loop rate for visibility
-#define LIMIT_RATE 0
-// Tick-rate in milliseconds (if LIMIT_RATE == 1)
+#define LIMIT_RATE 1
+// Tick-rate in milliseconds (if LIMIT_RATE == 1) 
 #define TICK_RATE 50
 
 // Cell map dimensions
-unsigned int cellmap_width = 600;
-unsigned int cellmap_height = 600;
+unsigned int cellmap_width = 200;
+unsigned int cellmap_height = 200;
 
 // Width and height (in pixels) of a cell i.e. magnification
-unsigned int cell_size = 1;
+unsigned int cell_size = 3;
 
 SDL_Window *window = NULL;
 SDL_Surface* surface = NULL;
 unsigned int s_width = cellmap_width * cell_size;
 unsigned int s_height = cellmap_height * cell_size;
 
-void DrawCell(unsigned int x, unsigned int y, unsigned int colour)
+
+void DrawCell(int x, int y, unsigned int color)
 {
     Uint8* pixel_ptr = (Uint8*)surface->pixels + (y * cell_size * s_width + x * cell_size) * 4;
 
@@ -31,14 +36,14 @@ void DrawCell(unsigned int x, unsigned int y, unsigned int colour)
     {
         for (unsigned int j = 0; j < cell_size; j++)
         {
-            *(pixel_ptr + j * 4) = colour;
-            *(pixel_ptr + j * 4 + 1) = colour;
-            *(pixel_ptr + j * 4 + 2) = colour;
+            *(pixel_ptr + j * 4) = color;
+            *(pixel_ptr + j * 4 + 1) = color;
+            *(pixel_ptr + j * 4 + 2) = color;
         }
         pixel_ptr += s_width * 4;
     }
 }
-
+#endif //endif of windowing
 
 
 int rollCellState(double p1)
@@ -202,17 +207,21 @@ void Conway::oneStep(int k)
                 {
                     (*this)(y, x) = 1;
                     increaseNeighbourCount(y, x);
+                    #if WINDOWING
                     DrawCell(y, x, 0xFF); //color the cell on the canvas to white
+                    #endif
                     //std::cout << y << " inc " << x << std::endl;
                 }
             }
             else
             {
-                if ((neighGrid[y * N + x] != k) & (neighGrid[y * N + x] != k + 1))
+                if ((neighGrid[y * N + x] != k) && (neighGrid[y * N + x] != k + 1))
                 {
                     (*this)(y, x) = 0;
                     decreaseNeighbourCount(y, x);
-                    DrawCell(y, x, 0x00); //color the cell on the canvas to be alive
+                    #if WINDOWING
+                    DrawCell(y, x, 0x00); //color the cell on the canvas to black
+                    #endif          
                     //std::cout << y << " dec " << x << std::endl;
                 }
             }
@@ -239,21 +248,21 @@ int main(int argc, char* argv[])
 {
 
     //init grid from vector
-    /*std::vector<int> v = { 0,0,0,0,0,0,
+    std::vector<int> v = { 0,0,0,0,0,0,
                            0,1,1,0,0,0,
                            0,1,1,0,0,0,
                            0,0,0,1,1,0,
                            0,0,0,1,1,0,
-                           0,0,0,0,0,0 };*/
+                           0,0,0,0,0,0 };
 
-    Conway cnw(600, 0.5);
+    Conway cnw(200, 0.5);
 
+    #if WINDOWING
     SDL_Init(SDL_INIT_VIDEO);
     window = SDL_CreateWindow("Conway's Game of Life", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, s_width, s_height, SDL_WINDOW_SHOWN);
     surface = SDL_GetWindowSurface(window);
     SDL_Event e;
 
-    int generation = 0;
 
     bool quit = false;
     while (!quit)
@@ -261,26 +270,24 @@ int main(int argc, char* argv[])
         while (SDL_PollEvent(&e) != 0)
             if (e.type == SDL_QUIT) quit = true;
 
-        generation++;
-
         // Recalculate and draw next generation
         cnw.oneStep(2);
         // Update frame buffer
         SDL_UpdateWindowSurface(window);
 
+    #endif
     #if LIMIT_RATE
         SDL_Delay(TICK_RATE);
     #endif
     }
-
+    #if WINDOWING
     // Destroy window 
     SDL_DestroyWindow(window);
     // Quit SDL subsystems 
     SDL_Quit();
 
-    std::cout << "Total Generations: " << generation << std::endl;
-
     system("pause");
+    #endif
 
 
     return 0;
