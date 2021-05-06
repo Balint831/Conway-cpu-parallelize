@@ -3,17 +3,20 @@
 #include <random>
 #include <algorithm>
 #include <ctime>
-#include <windows.h>
-#include <SDL.h>
+
 #include <thread>
 
-#define WINDOWING 1
+#define WINDOWING 0 //if 0, it is not shown in a window, if 1, window is created
 
-#if WINDOWING
 // Limit loop rate for visibility
-#define LIMIT_RATE 1
+#define LIMIT_RATE 0
 // Tick-rate in milliseconds (if LIMIT_RATE == 1) 
 #define TICK_RATE 50
+
+
+#if WINDOWING 
+#include <windows.h>
+#include <SDL.h>
 
 // Cell map dimensions
 unsigned int cellmap_width = 200;
@@ -247,7 +250,7 @@ void Conway::printNeigh()
 int main(int argc, char* argv[])
 {
 
-    //init grid from vector
+    //init grid from a vector
     std::vector<int> v = { 0,0,0,0,0,0,
                            0,1,1,0,0,0,
                            0,1,1,0,0,0,
@@ -255,7 +258,18 @@ int main(int argc, char* argv[])
                            0,0,0,1,1,0,
                            0,0,0,0,0,0 };
 
-    Conway cnw(200, 0.5);
+    Conway cnw(6, v);
+
+    std::cout << cnw; cnw.printNeigh();
+    
+    cnw.oneStep(2);
+    std::cout << cnw; cnw.printNeigh();
+
+    cnw.oneStep(2);
+    std::cout << cnw; cnw.printNeigh();
+
+
+
 
     #if WINDOWING
     SDL_Init(SDL_INIT_VIDEO);
@@ -278,8 +292,8 @@ int main(int argc, char* argv[])
     #endif
     #if LIMIT_RATE
         SDL_Delay(TICK_RATE);
-    #endif
     }
+    #endif
     #if WINDOWING
     // Destroy window 
     SDL_DestroyWindow(window);
