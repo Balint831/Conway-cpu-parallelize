@@ -232,13 +232,13 @@ void Conway::oneRow(int y, int k)
 void Conway::oneStep(int k)
 {
     neighGrid2 = neighGrid;
-    std::thread threads[6];
-    for (int y = 0; y < 6; y++) //****** 10 csere N-re
+    std::thread threads[10];
+    for (int y = 0; y < 10; y++) //****** 10 csere N-re
     {
         threads[y] = std::thread(&Conway::oneRow, this, y, k);
     }
 
-    for (int y = 0; y < 6; y++)
+    for (int y = 0; y < 10; y++)
     {
         threads[y].join();
     }
