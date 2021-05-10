@@ -4,8 +4,10 @@
 #include <algorithm>
 #include <ctime>
 #include <thread>
+#include <time_meas.hpp>
 
 #define WINDOWING 0 //if 0, it is not shown in a window, if 1, window is created
+#define MP 0 //multiprocessing
 
 // Limit loop rate for visibility
 #define LIMIT_RATE 0
@@ -232,16 +234,29 @@ void Conway::oneRow(int y, int k)
 void Conway::oneStep(int k)
 {
     neighGrid2 = neighGrid;
-    std::thread threads[10];
-    for (int y = 0; y < 10; y++) //****** 10 csere N-re
+
+#if MP
+    std::thread threads[150];
+    for (int y = 0; y < 150; y++) //****** 10 csere N-re
     {
         threads[y] = std::thread(&Conway::oneRow, this, y, k);
     }
 
-    for (int y = 0; y < 10; y++)
+    for (int y = 0; y < 150; y++)
     {
         threads[y].join();
     }
+
+#else
+    for (int y = 0; y < 150; y++) //****** 10 csere N-re
+    {
+        oneRow(y, k);
+    }
+#endif // MP
+
+
+
+    
     //std::for_each() .join
     neighGrid = neighGrid2;
 }
@@ -271,15 +286,15 @@ int main(int argc, char* argv[])
                            0,0,0,1,1,0,
                            0,0,0,0,0,0 };
 
-    Conway cnw(6, v);
-    
-    std::cout << cnw; cnw.printNeigh();
-    
-    cnw.oneStep(2);
-    std::cout << cnw; cnw.printNeigh();
+    const int n = 150;
 
-    cnw.oneStep(2);
-    std::cout << cnw; cnw.printNeigh();
+    Conway cnw(n, 0.5);
+    
+
+    for (int q = 0; q < 100; ++q)
+    {
+        cnw.oneStep(2);
+    }
 
 
 
