@@ -4,10 +4,12 @@
 #include <algorithm>
 #include <ctime>
 #include <thread>
+#include <fstream>
 #include <time_meas.hpp>
 
-#define WINDOWING 0 //if 0, it is not shown in a window, if 1, window is created
-#define MP 0 //multiprocessing
+
+#define WINDOWING 0 //if 0, the grid is not visualized, if 1, a window is created
+#define MP 1 //multiprocessing
 
 // Limit loop rate for visibility
 #define LIMIT_RATE 0
@@ -20,11 +22,11 @@
 #include <SDL.h>
 
 // Cell map dimensions
-unsigned int cellmap_width = 200;
-unsigned int cellmap_height = 200;
+unsigned int cellmap_width = 1000;
+unsigned int cellmap_height = 1000;
 
 // Width and height (in pixels) of a cell i.e. magnification
-unsigned int cell_size = 3;
+unsigned int cell_size = 1;
 
 SDL_Window *window = NULL;
 SDL_Surface* surface = NULL;
@@ -75,9 +77,9 @@ public:
     void increaseNeighbourCount(int y, int x);
     void decreaseNeighbourCount(int y, int x);
     void oneRow(int y, int k); //y - index of row
+    void multiRow(int y_start, int y_end, int k);
     void oneStep(int k);
     
-
     int& operator()(int i, int j)
     {
         return grid[N * i + j];
@@ -200,6 +202,7 @@ void Conway::decreaseNeighbourCount(int y, int x)
 
 void Conway::oneRow(int y, int k)
 {
+
     for (int x = 0; x < N; x++)
     {
         if ((*this)(y, x) == 0)
@@ -210,6 +213,7 @@ void Conway::oneRow(int y, int k)
             {
                 (*this)(y, x) = 1;
                 increaseNeighbourCount(y, x);
+            
                 #if WINDOWING
                 DrawCell(y, x, 0xFF); //color the cell on the canvas to white
                 #endif
@@ -222,6 +226,7 @@ void Conway::oneRow(int y, int k)
             {
                 (*this)(y, x) = 0;
                 decreaseNeighbourCount(y, x);
+
                 #if WINDOWING
                 DrawCell(y, x, 0x00); //color the cell on the canvas to black
                 #endif          
@@ -229,35 +234,72 @@ void Conway::oneRow(int y, int k)
             }
         }
     }
+
+        
 }
+
+void Conway::multiRow(int y_start, int y_end, int k)
+{
+    for (; y_start < y_end; ++y_start)
+    {
+        oneRow(y_start, k);
+    }
+}
+
 
 void Conway::oneStep(int k)
 {
     neighGrid2 = neighGrid;
 
 #if MP
-    std::thread threads[150];
-    for (int y = 0; y < 150; y++) //****** 10 csere N-re
+    std::thread threads[8];
+    for (int thread_num = 0; thread_num < 8; ++thread_num)  //maximum number of 8 threads on this machine
     {
-        threads[y] = std::thread(&Conway::oneRow, this, y, k);
+        int num_of_tasks = std::floor(N / 8);
+        int y_start = thread_num * num_of_tasks;
+        int y_end = (thread_num + 1) * num_of_tasks;
+        threads[ thread_num ] = std::thread(&Conway::multiRow, this, y_start, y_end, k);
     }
 
-    for (int y = 0; y < 150; y++)
+    for (int y = 0; y < 8; y++)
     {
         threads[y].join();
     }
-
+    
 #else
-    for (int y = 0; y < 150; y++) //****** 10 csere N-re
+    for (int y = 0; y < N; y++) 
     {
-        oneRow(y, k);
+        for (int x = 0; x < N; x++)
+        {
+            if ((*this)(y, x) == 0)
+            {
+                //if the cell is dead and it has k+1 living neighbours, make it alive
+                if (neighGrid[y * N + x] == k + 1)
+
+                {
+                    (*this)(y, x) = 1;
+                    increaseNeighbourCount(y, x);
+                    #if WINDOWING
+                    DrawCell(y, x, 0xFF); //color the cell on the canvas to white
+                    #endif
+
+                }
+            }
+            else
+            {
+                if ((neighGrid[y * N + x] != k) && (neighGrid[y * N + x] != k + 1))
+                {
+                    (*this)(y, x) = 0;
+                    decreaseNeighbourCount(y, x);
+                    #if WINDOWING
+                    DrawCell(y, x, 0x00); //color the cell on the canvas to black
+                    #endif          
+                }
+            }
+}
     }
 #endif // MP
 
-
-
-    
-    //std::for_each() .join
     neighGrid = neighGrid2;
 }
 
@@ -286,19 +328,21 @@ int main(int argc, char* argv[])
                            0,0,0,1,1,0,
                            0,0,0,0,0,0 };
 
-    const int n = 150;
+    int n = 15000;
 
     Conway cnw(n, 0.5);
     
+    std::ofstream ofile("times_mp.txt");
 
-    for (int q = 0; q < 100; ++q)
+    for (int q = 0; q < 200; ++q)
     {
+        auto t1 = tmark();
         cnw.oneStep(2);
+        auto t2 = tmark();
+        std::cout << delta_time(t1, t2) << std::endl;
     }
-
-
-
-
+    ofile.close();
+    
     #if WINDOWING
     SDL_Init(SDL_INIT_VIDEO);
     window = SDL_CreateWindow("Conway's Game of Life", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, s_width, s_height, SDL_WINDOW_SHOWN);
@@ -313,15 +357,20 @@ int main(int argc, char* argv[])
             if (e.type == SDL_QUIT) quit = true;
 
         // Recalculate and draw next generation
+        auto t1 = tmark();
         cnw.oneStep(2);
+        auto t2 = tmark();
+        std::cout << delta_time(t1, t2) << std::endl;
         // Update frame buffer
         SDL_UpdateWindowSurface(window);
 
+    
     #endif
     #if LIMIT_RATE
         SDL_Delay(TICK_RATE);
     }
     #endif
+    
     #if WINDOWING
     // Destroy window 
     SDL_DestroyWindow(window);
