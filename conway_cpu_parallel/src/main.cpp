@@ -65,13 +65,13 @@ struct Conway
 {
 private:
     int N;
-    std::vector<int> grid; //the cell states are registered on this grid
-    std::vector<int> neighGrid;
+    std::vector<char> grid; //the cell states are registered on this grid
+    std::vector<int> neighGrid; //the number of living neighbor cells
     std::vector<int> neighGrid2;
 
 public:
     Conway(int n, double p1);
-    Conway(int n, std::vector<int>& v);
+    Conway(int n, std::vector<char>& v);
     void initNeigh(int y, int x);
     void printNeigh();
     void increaseNeighbourCount(int y, int x);
@@ -80,9 +80,9 @@ public:
     void multiRow(int y_start, int y_end, int k);
     void oneStep(int k);
     
-    int& operator()(int i, int j)
+    char& operator()(int y, int x)
     {
-        return grid[N * i + j];
+        return grid[N * y + x];
     }
 
     friend std::ostream& operator<<(std::ostream& o, Conway& A)
@@ -118,7 +118,7 @@ Conway::Conway(int n, double p1)
     }
 }
 
-Conway::Conway(int n, std::vector<int>& v)
+Conway::Conway(int n, std::vector<char>& v)
 {
     N = n;
     grid = v;
@@ -211,7 +211,7 @@ void Conway::oneRow(int y, int k)
             if (neighGrid[y * N + x] == k + 1)
 
             {
-                (*this)(y, x) = 1;
+                (*this)(y, x) = true;
                 increaseNeighbourCount(y, x);
             
                 #if WINDOWING
@@ -224,7 +224,7 @@ void Conway::oneRow(int y, int k)
         {
             if ((neighGrid[y * N + x] != k) && (neighGrid[y * N + x] != k + 1))
             {
-                (*this)(y, x) = 0;
+                (*this)(y, x) = false;
                 decreaseNeighbourCount(y, x);
 
                 #if WINDOWING
@@ -328,7 +328,7 @@ int main(int argc, char* argv[])
                            0,0,0,1,1,0,
                            0,0,0,0,0,0 };
 
-    int n = 15000;
+    int n = 20000;
 
     Conway cnw(n, 0.5);
     

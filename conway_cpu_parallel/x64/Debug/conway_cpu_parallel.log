@@ -1,2 +1,3 @@
 ﻿  main.cpp
+C:\Users\balin\source\repos\Conway-cpu-parallelize\conway_cpu_parallel\src\main.cpp(258,26): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
   conway_cpu_parallel.vcxproj -> C:\Users\balin\source\repos\Conway-cpu-parallelize\x64\Debug\conway_cpu_parallel.exe
