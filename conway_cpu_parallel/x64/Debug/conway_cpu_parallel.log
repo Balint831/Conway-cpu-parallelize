@@ -1,3 +1,165 @@
 ﻿  main.cpp
-C:\Users\balin\source\repos\Conway-cpu-parallelize\conway_cpu_parallel\src\main.cpp(258,26): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-  conway_cpu_parallel.vcxproj -> C:\Users\balin\source\repos\Conway-cpu-parallelize\x64\Debug\conway_cpu_parallel.exe
+C:\Users\balin\source\repos\Conway-cpu-parallelize\conway_cpu_parallel\src\main.cpp(24,11): error C2143: syntax error: missing ';' before '*'
+C:\Users\balin\source\repos\Conway-cpu-parallelize\conway_cpu_parallel\src\main.cpp(24,11): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\Users\balin\source\repos\Conway-cpu-parallelize\conway_cpu_parallel\src\main.cpp(24,22): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\Users\balin\source\repos\Conway-cpu-parallelize\conway_cpu_parallel\src\main.cpp(25,12): error C2143: syntax error: missing ';' before '*'
+C:\Users\balin\source\repos\Conway-cpu-parallelize\conway_cpu_parallel\src\main.cpp(25,12): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\Users\balin\source\repos\Conway-cpu-parallelize\conway_cpu_parallel\src\main.cpp(25,24): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\SDL2\include\SDL_surface.h(95,14): error C2378: 'SDL_Surface': redefinition; symbol cannot be overloaded with a typedef
+C:\Users\balin\source\repos\Conway-cpu-parallelize\conway_cpu_parallel\src\main.cpp(25): message : see declaration of 'SDL_Surface'
+C:\SDL2\include\SDL_surface.h(132,29): error C2143: syntax error: missing ';' before '*'
+C:\SDL2\include\SDL_surface.h(132,29): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\SDL2\include\SDL_surface.h(134,61): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\SDL2\include\SDL_surface.h(137,29): error C2143: syntax error: missing ';' before '*'
+C:\SDL2\include\SDL_surface.h(137,29): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\SDL2\include\SDL_surface.h(138,68): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\SDL2\include\SDL_surface.h(140,29): error C2143: syntax error: missing ';' before '*'
+C:\SDL2\include\SDL_surface.h(140,29): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\SDL2\include\SDL_surface.h(148,76): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\SDL2\include\SDL_surface.h(149,29): error C2143: syntax error: missing ';' before '*'
+C:\SDL2\include\SDL_surface.h(149,29): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\SDL2\include\SDL_surface.h(150,79): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\SDL2\include\SDL_surface.h(151,67): error C2297: '*': illegal, right operand has type 'int *'
+C:\SDL2\include\SDL_surface.h(151,67): warning C4229: anachronism used: modifiers on data are ignored
+C:\SDL2\include\SDL_surface.h(151,30): error C2182: 'SDL_FreeSurface': illegal use of type 'void'
+C:\SDL2\include\SDL_surface.h(160,72): error C2297: '*': illegal, right operand has type 'int *'
+C:\SDL2\include\SDL_surface.h(161,65): error C2065: 'palette': undeclared identifier
+C:\SDL2\include\SDL_surface.h(161,51): error C2275: 'SDL_Palette': illegal use of this type as an expression
+C:\SDL2\include\SDL_pixels.h(313): message : see declaration of 'SDL_Palette'
+C:\SDL2\include\SDL_surface.h(161,72): warning C4229: anachronism used: modifiers on data are ignored
+C:\SDL2\include\SDL_surface.h(182,66): error C2297: '*': illegal, right operand has type 'int *'
+C:\SDL2\include\SDL_surface.h(182,66): warning C4229: anachronism used: modifiers on data are ignored
+C:\SDL2\include\SDL_surface.h(184,69): error C2297: '*': illegal, right operand has type 'int *'
+C:\SDL2\include\SDL_surface.h(184,69): warning C4229: anachronism used: modifiers on data are ignored
+C:\SDL2\include\SDL_surface.h(184,30): error C2182: 'SDL_UnlockSurface': illegal use of type 'void'
+C:\SDL2\include\SDL_surface.h(195,29): error C2143: syntax error: missing ';' before '*'
+C:\SDL2\include\SDL_surface.h(195,29): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\SDL2\include\SDL_surface.h(196,65): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\SDL2\include\SDL_surface.h(219,27): error C2297: '*': illegal, right operand has type 'int *'
+C:\SDL2\include\SDL_surface.h(219,41): error C2065: 'dst': undeclared identifier
+C:\SDL2\include\SDL_surface.h(219,29): error C2275: 'SDL_RWops': illegal use of this type as an expression
+C:\SDL2\include\SDL_rwops.h(52): message : see declaration of 'SDL_RWops'
+C:\SDL2\include\SDL_surface.h(219,46): error C2062: type 'int' unexpected
+C:\SDL2\include\SDL_surface.h(237,68): error C2297: '*': illegal, right operand has type 'int *'
+C:\SDL2\include\SDL_surface.h(238,47): error C2062: type 'int' unexpected
+C:\SDL2\include\SDL_surface.h(245,73): error C2297: '*': illegal, right operand has type 'int *'
+C:\SDL2\include\SDL_surface.h(245,73): warning C4229: anachronism used: modifiers on data are ignored
+C:\SDL2\include\SDL_surface.h(258,66): error C2297: '*': illegal, right operand has type 'int *'
+C:\SDL2\include\SDL_surface.h(259,45): error C2062: type 'int' unexpected
+C:\SDL2\include\SDL_surface.h(266,71): error C2297: '*': illegal, right operand has type 'int *'
+C:\SDL2\include\SDL_surface.h(266,71): warning C4229: anachronism used: modifiers on data are ignored
+C:\SDL2\include\SDL_surface.h(278,66): error C2297: '*': illegal, right operand has type 'int *'
+C:\SDL2\include\SDL_surface.h(279,54): error C2065: 'key': undeclared identifier
+C:\SDL2\include\SDL_surface.h(279,45): error C2275: 'Uint32': illegal use of this type as an expression
+C:\SDL2\include\SDL_stdinc.h(209): message : see declaration of 'Uint32'
+C:\SDL2\include\SDL_surface.h(279,57): warning C4229: anachronism used: modifiers on data are ignored
+C:\SDL2\include\SDL_surface.h(293,73): error C2297: '*': illegal, right operand has type 'int *'
+C:\SDL2\include\SDL_surface.h(294,52): error C2275: 'Uint8': illegal use of this type as an expression
+C:\SDL2\include\SDL_stdinc.h(185): message : see declaration of 'Uint8'
+C:\SDL2\include\SDL_surface.h(294,58): error C2146: syntax error: missing ')' before identifier 'r'
+C:\SDL2\include\SDL_surface.h(309,73): error C2297: '*': illegal, right operand has type 'int *'
+C:\SDL2\include\SDL_surface.h(310,60): error C2065: 'r': undeclared identifier
+C:\SDL2\include\SDL_surface.h(310,52): error C2275: 'Uint8': illegal use of this type as an expression
+C:\SDL2\include\SDL_stdinc.h(185): message : see declaration of 'Uint8'
+C:\SDL2\include\SDL_surface.h(310,71): error C2065: 'g': undeclared identifier
+C:\SDL2\include\SDL_surface.h(310,63): error C2275: 'Uint8': illegal use of this type as an expression
+C:\SDL2\include\SDL_stdinc.h(185): message : see declaration of 'Uint8'
+C:\SDL2\include\SDL_surface.h(311,60): error C2065: 'b': undeclared identifier
+C:\SDL2\include\SDL_surface.h(311,52): error C2275: 'Uint8': illegal use of this type as an expression
+C:\SDL2\include\SDL_stdinc.h(185): message : see declaration of 'Uint8'
+C:\SDL2\include\SDL_surface.h(311,61): warning C4229: anachronism used: modifiers on data are ignored
+C:\SDL2\include\SDL_surface.h(323,73): error C2297: '*': illegal, right operand has type 'int *'
+C:\SDL2\include\SDL_surface.h(324,52): error C2275: 'Uint8': illegal use of this type as an expression
+C:\SDL2\include\SDL_stdinc.h(185): message : see declaration of 'Uint8'
+C:\SDL2\include\SDL_surface.h(324,58): error C2146: syntax error: missing ')' before identifier 'alpha'
+C:\SDL2\include\SDL_surface.h(336,73): error C2297: '*': illegal, right operand has type 'int *'
+C:\SDL2\include\SDL_surface.h(337,60): error C2065: 'alpha': undeclared identifier
+C:\SDL2\include\SDL_surface.h(337,52): error C2275: 'Uint8': illegal use of this type as an expression
+C:\SDL2\include\SDL_stdinc.h(185): message : see declaration of 'Uint8'
+C:\SDL2\include\SDL_surface.h(337,65): warning C4229: anachronism used: modifiers on data are ignored
+C:\SDL2\include\SDL_surface.h(349,74): error C2297: '*': illegal, right operand has type 'int *'
+C:\SDL2\include\SDL_surface.h(350,53): error C2275: 'SDL_BlendMode': illegal use of this type as an expression
+C:\SDL2\include\SDL_blendmode.h(60): message : see declaration of 'SDL_BlendMode'
+C:\SDL2\include\SDL_surface.h(350,67): error C2146: syntax error: missing ')' before identifier 'blendMode'
+C:\SDL2\include\SDL_surface.h(362,74): error C2297: '*': illegal, right operand has type 'int *'
+C:\SDL2\include\SDL_surface.h(363,68): error C2065: 'blendMode': undeclared identifier
+C:\SDL2\include\SDL_surface.h(363,53): error C2275: 'SDL_BlendMode': illegal use of this type as an expression
+C:\SDL2\include\SDL_blendmode.h(60): message : see declaration of 'SDL_BlendMode'
+C:\SDL2\include\SDL_surface.h(363,77): warning C4229: anachronism used: modifiers on data are ignored
+C:\SDL2\include\SDL_surface.h(378,71): error C2297: '*': illegal, right operand has type 'int *'
+C:\SDL2\include\SDL_surface.h(379,50): error C2059: syntax error: 'const'
+C:\SDL2\include\SDL_surface.h(387,67): error C2297: '*': illegal, right operand has type 'int *'
+C:\SDL2\include\SDL_surface.h(388,57): error C2065: 'rect': undeclared identifier
+C:\SDL2\include\SDL_surface.h(388,46): error C2275: 'SDL_Rect': illegal use of this type as an expression
+C:\SDL2\include\SDL_rect.h(77): message : see declaration of 'SDL_Rect'
+C:\SDL2\include\SDL_surface.h(388,61): warning C4229: anachronism used: modifiers on data are ignored
+C:\SDL2\include\SDL_surface.h(387,30): error C2182: 'SDL_GetClipRect': illegal use of type 'void'
+C:\SDL2\include\SDL_surface.h(393,29): error C2143: syntax error: missing ';' before '*'
+C:\SDL2\include\SDL_surface.h(393,29): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\SDL2\include\SDL_surface.h(393,80): error C2297: '*': illegal, right operand has type 'int *'
+C:\SDL2\include\SDL_surface.h(393,80): warning C4229: anachronism used: modifiers on data are ignored
+C:\SDL2\include\SDL_surface.h(393,80): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\SDL2\include\SDL_surface.h(405,29): error C2143: syntax error: missing ';' before '*'
+C:\SDL2\include\SDL_surface.h(405,29): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\SDL2\include\SDL_surface.h(406,20): error C2065: 'src': undeclared identifier
+C:\SDL2\include\SDL_surface.h(406,25): error C2059: syntax error: 'const'
+C:\SDL2\include\SDL_surface.h(407,29): error C2143: syntax error: missing ';' before '*'
+C:\SDL2\include\SDL_surface.h(407,29): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\SDL2\include\SDL_surface.h(408,20): error C2065: 'src': undeclared identifier
+C:\SDL2\include\SDL_surface.h(408,25): error C2275: 'Uint32': illegal use of this type as an expression
+C:\SDL2\include\SDL_stdinc.h(209): message : see declaration of 'Uint32'
+C:\SDL2\include\SDL_surface.h(408,32): error C2146: syntax error: missing ')' before identifier 'pixel_format'
+C:\SDL2\include\SDL_surface.h(432,20): error C2065: 'dst': undeclared identifier
+C:\SDL2\include\SDL_surface.h(432,25): error C2059: syntax error: 'const'
+C:\SDL2\include\SDL_surface.h(434,20): error C2065: 'dst': undeclared identifier
+C:\SDL2\include\SDL_surface.h(434,25): error C2059: syntax error: 'const'
+C:\SDL2\include\SDL_surface.h(500,20): error C2065: 'src': undeclared identifier
+C:\SDL2\include\SDL_surface.h(500,25): error C2059: syntax error: 'const'
+C:\SDL2\include\SDL_surface.h(508,20): error C2065: 'src': undeclared identifier
+C:\SDL2\include\SDL_surface.h(508,36): error C2065: 'srcrect': undeclared identifier
+C:\SDL2\include\SDL_surface.h(508,25): error C2275: 'SDL_Rect': illegal use of this type as an expression
+C:\SDL2\include\SDL_rect.h(77): message : see declaration of 'SDL_Rect'
+C:\SDL2\include\SDL_surface.h(509,20): error C2065: 'dst': undeclared identifier
+C:\SDL2\include\SDL_surface.h(509,36): error C2065: 'dstrect': undeclared identifier
+C:\SDL2\include\SDL_surface.h(509,25): error C2275: 'SDL_Rect': illegal use of this type as an expression
+C:\SDL2\include\SDL_rect.h(77): message : see declaration of 'SDL_Rect'
+C:\SDL2\include\SDL_surface.h(509,43): warning C4229: anachronism used: modifiers on data are ignored
+C:\SDL2\include\SDL_surface.h(517,59): error C2065: 'src': undeclared identifier
+C:\SDL2\include\SDL_surface.h(518,45): error C2059: syntax error: 'const'
+C:\SDL2\include\SDL_surface.h(529,20): error C2065: 'src': undeclared identifier
+C:\SDL2\include\SDL_surface.h(529,25): error C2059: syntax error: 'const'
+C:\SDL2\include\SDL_surface.h(537,20): error C2065: 'src': undeclared identifier
+C:\SDL2\include\SDL_surface.h(537,36): error C2065: 'srcrect': undeclared identifier
+C:\SDL2\include\SDL_surface.h(537,25): error C2275: 'SDL_Rect': illegal use of this type as an expression
+C:\SDL2\include\SDL_rect.h(77): message : see declaration of 'SDL_Rect'
+C:\SDL2\include\SDL_surface.h(538,19): error C2065: 'dst': undeclared identifier
+C:\SDL2\include\SDL_surface.h(538,35): error C2065: 'dstrect': undeclared identifier
+C:\SDL2\include\SDL_surface.h(538,24): error C2275: 'SDL_Rect': illegal use of this type as an expression
+C:\SDL2\include\SDL_rect.h(77): message : see declaration of 'SDL_Rect'
+C:\SDL2\include\SDL_surface.h(538,42): warning C4229: anachronism used: modifiers on data are ignored
+C:\SDL2\include\SDL_video.h(90,37): error C2378: 'SDL_Window': redefinition; symbol cannot be overloaded with a typedef
+C:\Users\balin\source\repos\Conway-cpu-parallelize\conway_cpu_parallel\src\main.cpp(24): message : see declaration of 'SDL_Window'
+C:\SDL2\include\SDL_video.h(440,74): error C2297: '*': illegal, right operand has type 'int *'
+C:\SDL2\include\SDL_video.h(440,74): warning C4229: anachronism used: modifiers on data are ignored
+C:\SDL2\include\SDL_video.h(456,73): error C2297: '*': illegal, right operand has type 'int *'
+C:\SDL2\include\SDL_video.h(457,54): error C2059: syntax error: 'const'
+C:\SDL2\include\SDL_video.h(467,73): error C2297: '*': illegal, right operand has type 'int *'
+C:\SDL2\include\SDL_video.h(468,72): error C2065: 'mode': undeclared identifier
+C:\SDL2\include\SDL_video.h(468,54): error C2275: 'SDL_DisplayMode': illegal use of this type as an expression
+C:\SDL2\include\SDL_video.h(60): message : see declaration of 'SDL_DisplayMode'
+C:\SDL2\include\SDL_video.h(468,76): warning C4229: anachronism used: modifiers on data are ignored
+C:\SDL2\include\SDL_video.h(473,76): error C2297: '*': illegal, right operand has type 'int *'
+C:\SDL2\include\SDL_video.h(473,76): warning C4229: anachronism used: modifiers on data are ignored
+C:\SDL2\include\SDL_video.h(521,28): error C2143: syntax error: missing ';' before '*'
+C:\SDL2\include\SDL_video.h(521,28): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\SDL2\include\SDL_video.h(523,75): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\SDL2\include\SDL_video.h(534,28): error C2143: syntax error: missing ';' before '*'
+C:\SDL2\include\SDL_video.h(534,28): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\SDL2\include\SDL_video.h(534,76): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\SDL2\include\SDL_video.h(539,67): error C2297: '*': illegal, right operand has type 'int *'
+C:\SDL2\include\SDL_video.h(539,67): warning C4229: anachronism used: modifiers on data are ignored
+C:\SDL2\include\SDL_video.h(544,28): error C2143: syntax error: missing ';' before '*'
+C:\SDL2\include\SDL_video.h(544,28): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\SDL2\include\SDL_video.h(544,68): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\SDL2\include\SDL_video.h(549,70): error C2297: '*': illegal, right operand has type 'int *'
+C:\SDL2\include\SDL_video.h(549,70): fatal error C1003: error count exceeds 100; stopping compilation

@@ -9,7 +9,7 @@
 
 
 #define WINDOWING 0 //if 0, the grid is not visualized, if 1, a window is created
-#define MP 1 //multiprocessing
+#define MP 0 //multiprocessing
 
 // Limit loop rate for visibility
 #define LIMIT_RATE 0
@@ -65,13 +65,13 @@ struct Conway
 {
 private:
     int N;
-    std::vector<char> grid; //the cell states are registered on this grid
-    std::vector<int> neighGrid; //the number of living neighbor cells
-    std::vector<int> neighGrid2;
+    std::vector<int> grid; //the cell states are registered on this grid
+    std::vector<char> neighGrid; //the number of living neighbor cells
+    std::vector<char> neighGrid2;
 
 public:
     Conway(int n, double p1);
-    Conway(int n, std::vector<char>& v);
+    Conway(int n, std::vector<int>& v);
     void initNeigh(int y, int x);
     void printNeigh();
     void increaseNeighbourCount(int y, int x);
@@ -80,7 +80,7 @@ public:
     void multiRow(int y_start, int y_end, int k);
     void oneStep(int k);
     
-    char& operator()(int y, int x)
+    int& operator()(int y, int x)
     {
         return grid[N * y + x];
     }
@@ -118,7 +118,7 @@ Conway::Conway(int n, double p1)
     }
 }
 
-Conway::Conway(int n, std::vector<char>& v)
+Conway::Conway(int n, std::vector<int>& v)
 {
     N = n;
     grid = v;
@@ -328,18 +328,19 @@ int main(int argc, char* argv[])
                            0,0,0,1,1,0,
                            0,0,0,0,0,0 };
 
-    int n = 20000;
+    int n = 6;
 
-    Conway cnw(n, 0.5);
+    Conway cnw(n, v);
     
-    std::ofstream ofile("times_mp.txt");
+    std::ofstream ofile("cnw_visu.txt");
 
-    for (int q = 0; q < 200; ++q)
+    for (int q = 0; q < 20; ++q)
     {
         auto t1 = tmark();
         cnw.oneStep(2);
         auto t2 = tmark();
-        std::cout << delta_time(t1, t2) << std::endl;
+        //std::cout << delta_time(t1, t2) << std::endl;
+        ofile << cnw;
     }
     ofile.close();
     
