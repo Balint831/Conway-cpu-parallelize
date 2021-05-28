@@ -133,7 +133,7 @@ Conway::Conway(int n, std::vector<int>& v)
 
 void Conway::initNeigh(int y, int x)
 {
-    int neighCount = 0;
+    char neighCount = 0;
     int xleft, xright, yabove, ybelow;
     //the reason for this section is that the modulo operation in C++ is a mess
     xleft = (x == 0) ? N - 1 : x - 1;
