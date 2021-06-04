@@ -65,13 +65,13 @@ struct Conway
 {
 private:
     int N;
-    std::vector<int> grid; //the cell states are registered on this grid
+    std::vector<char> grid; //the cell states are registered on this grid
     std::vector<char> neighGrid; //the number of living neighbor cells
     std::vector<char> neighGrid2;
 
 public:
     Conway(int n, double p1);
-    Conway(int n, std::vector<int>& v);
+    Conway(int n, std::vector<char>& v);
     void initNeigh(int y, int x);
     void printNeigh();
     void increaseNeighbourCount(int y, int x);
@@ -80,7 +80,7 @@ public:
     void multiRow(int y_start, int y_end, int k);
     void oneStep(int k);
     
-    int& operator()(int y, int x)
+    char& operator()(int y, int x)
     {
         return grid[N * y + x];
     }
@@ -91,7 +91,7 @@ public:
         {
             for (int j = 0; j < A.N; j++)
             {
-                o << A.grid[i * A.N + j] << " ";
+                o << static_cast<int>(A.grid[i * A.N + j]) << " ";
             }
             o << "\n";
         }
@@ -104,10 +104,15 @@ public:
 Conway::Conway(int n, double p1)
 {
     N = n;
-    for (int i = 0; i < N * N; i++)
-    {
-        grid.push_back(rollCellState(0.5));
-    }
+    std::vector<char> g(n * n);
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::discrete_distribution<> d({ 1- p1, 1 });
+
+    std::generate(g.begin(), g.end(), [&] { return d(gen); });
+    
+    grid = std::move(g);
 
     for (int y = 0; y < N; y++)
     {
@@ -118,7 +123,7 @@ Conway::Conway(int n, double p1)
     }
 }
 
-Conway::Conway(int n, std::vector<int>& v)
+Conway::Conway(int n, std::vector<char>& v)
 {
     N = n;
     grid = v;
@@ -321,26 +326,33 @@ int main(int argc, char* argv[])
 {
 
     //init grid from a vector
-    std::vector<int> v = { 0,0,0,0,0,0,
-                           0,1,1,0,0,0,
-                           0,1,1,0,0,0,
-                           0,0,0,1,1,0,
-                           0,0,0,1,1,0,
-                           0,0,0,0,0,0 };
+    std::vector<char> v = {     0,0,0,0,0,0,0,0,0,0,
+                                0,0,1,0,0,0,0,0,0,0,
+                                0,0,0,1,0,0,0,0,0,0,
+                                0,1,1,1,0,0,0,0,0,0,
+                                0,0,0,0,0,0,0,0,0,0,
+                                0,0,0,0,0,0,0,0,0,0,
+                                0,0,0,0,0,0,0,0,0,0, 
+                                0,0,0,0,0,0,0,0,0,0,
+                                0,0,0,0,0,0,0,0,0,0,
+                                0,0,0,0,0,0,0,0,0,0,
+                                0,0,0,0,0,0,0,0,0,0};
 
-    int n = 6;
+
+
+    int n = 10;
 
     Conway cnw(n, v);
     
     std::ofstream ofile("cnw_visu.txt");
 
-    for (int q = 0; q < 20; ++q)
+    for (int q = 0; q < 30; ++q)
     {
         auto t1 = tmark();
         cnw.oneStep(2);
         auto t2 = tmark();
-        //std::cout << delta_time(t1, t2) << std::endl;
-        ofile << cnw;
+        std::cout << delta_time(t1, t2) << std::endl;
+        std::cout << cnw;
     }
     ofile.close();
     
