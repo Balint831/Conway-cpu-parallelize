@@ -157,11 +157,11 @@ void Conway::oneRow(int y)
     for (int x = 0; x < N; ++x)
     {
         char neighCount = countNeighs(y, x); //Counting the living neighbours
-        std::cout << static_cast<int>(neighCount) <<" ";
+        //std::cout << static_cast<int>(neighCount) <<" ";
 
-        if (grid[N * y + x] == 0 && (neighCount == 3)) { grid2[N * y + x] = 1; }
+        if ( (*this)(y, x) == 0 && (neighCount == 3)) { grid2[N * y + x] = 1; }
 
-        if (grid[N * y + x] == 1 && ((neighCount != 3) && (neighCount != 2))) { grid2[N * y + x] = 0; }
+        if ( (*this)(y, x) == 1 && ((neighCount != 3) && (neighCount != 2))) { grid2[N * y + x] = 0; }
 
     }
 }
@@ -185,7 +185,8 @@ void Conway::oneStep()
     {
         int num_of_tasks = std::floor(N / 8);
         int y_start = thread_num * num_of_tasks;
-        int y_end = ((thread_num + 1) * num_of_tasks) < (N - 1) ? ((thread_num + 1) * num_of_tasks) : (N - 1);
+        int y_end = (thread_num  == 7) ? ((thread_num + 1) * num_of_tasks + N % 8) : (thread_num + 1) * num_of_tasks; //the last thread takes on the remainder of the work
+
         threads[ thread_num ] = std::thread(&Conway::multiRow, this, y_start, y_end);
     }
 
@@ -210,19 +211,29 @@ int main(int argc, char* argv[])
 {
 
     //init grid from a vector
-    std::vector<char> v = {     0,0,0,0,0,0,0,0,0,0,
-                                0,0,1,0,0,0,0,0,0,0,
-                                0,0,0,1,0,0,0,0,0,0,
-                                0,1,1,1,0,0,0,0,0,0,
-                                0,0,0,0,0,0,0,0,0,0,
-                                0,0,0,0,0,0,0,0,0,0,
-                                0,0,0,0,0,0,0,0,0,0, 
-                                0,0,0,0,0,0,0,0,0,0,
-                                0,0,0,0,0,0,0,0,0,0,
-                                0,0,0,0,0,0,0,0,0,0,
-                                0,0,0,0,0,0,0,0,0,0};
+    std::vector<char> v = {     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                                0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                                0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                                0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  
+                                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 
+                                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 
+                                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 
+                                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 
+                                0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 
+                                0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 
+                                0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    };
     
-    int n = 10;
+    int n = 20;
 
     Conway cnw(n, v);
     
@@ -235,14 +246,14 @@ int main(int argc, char* argv[])
 
     
 
-    for (int q = 0; q < 20; ++q)
+    for (int q = 0; q < 600; ++q)
     {
         auto t1 = tmark();
         cnw.oneStep();
         auto t2 = tmark();
         std::cout << delta_time(t1, t2) << std::endl;
         
-        std::cout << cnw;
+        //std::cout << cnw;
 
         times << delta_time(t1, t2) << std::endl;
         ofile << cnw;
