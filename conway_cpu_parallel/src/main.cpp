@@ -9,7 +9,7 @@
 
 
 #define WINDOWING 0 //if 0, the grid is not visualized, if 1, a window is created
-#define MP 0 //multiprocessing
+#define MP 1 //multiprocessing
 
 // Limit loop rate for visibility
 #define LIMIT_RATE 0
@@ -66,19 +66,17 @@ struct Conway
 private:
     int N;
     std::vector<char> grid; //the cell states are registered on this grid
-    std::vector<char> neighGrid; //the number of living neighbor cells
-    std::vector<char> neighGrid2;
+    std::vector<char> grid2;
 
 public:
     Conway(int n, double p1);
     Conway(int n, std::vector<char>& v);
-    void initNeigh(int y, int x);
-    void printNeigh();
-    void increaseNeighbourCount(int y, int x);
-    void decreaseNeighbourCount(int y, int x);
-    void oneRow(int y, int k); //y - index of row
-    void multiRow(int y_start, int y_end, int k);
-    void oneStep(int k);
+    
+    char& countNeighs(int y, int x);
+    void oneRow(int y); //y - index of row
+    void multiRow(int y_start, int y_end);
+    void oneStep();
+    void printGrid2();
     
     char& operator()(int y, int x)
     {
@@ -100,52 +98,46 @@ public:
     }
 };
 
+void Conway::printGrid2()
+{
+    grid2.swap(grid);
+    std::cout << *this;
+    grid2.swap(grid);
+}
+
 
 Conway::Conway(int n, double p1)
 {
     N = n;
-    std::vector<char> g(n * n);
+    std::vector<char> g;
 
     std::random_device rd;
     std::mt19937 gen(rd());
     std::discrete_distribution<> d({ 1- p1, 1 });
 
-    std::generate(g.begin(), g.end(), [&] { return d(gen); });
+    std::generate_n(std::back_inserter(g), n * n, [&] { return d(gen); });
     
     grid = std::move(g);
 
-    for (int y = 0; y < N; y++)
-    {
-        for (int x = 0; x < N; x++)
-        {
-            initNeigh(y, x);
-        }
-    }
+    std::copy(grid.begin(), grid.end(), std::back_inserter(grid2) );
 }
 
 Conway::Conway(int n, std::vector<char>& v)
 {
     N = n;
     grid = v;
-    for (int y = 0; y < N; y++)
-    {
-        for (int x = 0; x < N; x++)
-        {
-            initNeigh(y, x);
-        }
-    }
+    std::copy(grid.begin(), grid.end(), std::back_inserter(grid2));
 }
 
-void Conway::initNeigh(int y, int x)
+char& Conway::countNeighs(int y, int x)
 {
+    // Loop unrolling
     char neighCount = 0;
-    int xleft, xright, yabove, ybelow;
-    //the reason for this section is that the modulo operation in C++ is a mess
-    xleft = (x == 0) ? N - 1 : x - 1;
-    xright = (x == (N - 1)) ? 0 : x + 1;
+    int xleft = (x == 0) ? N - 1 : x - 1;
+    int xright = (x == (N - 1)) ? 0 : x + 1;
 
-    yabove = (y == 0) ? N - 1 : y - 1;
-    ybelow = (y == (N - 1)) ? 0 : y + 1;
+    int yabove = (y == 0) ? N - 1 : y - 1;
+    int ybelow = (y == (N - 1)) ? 0 : y + 1;
 
     neighCount += (*this)(yabove, xleft);
     neighCount += (*this)(yabove, x);
@@ -157,113 +149,44 @@ void Conway::initNeigh(int y, int x)
     neighCount += (*this)(ybelow, xleft);
     neighCount += (*this)(ybelow, x);
     neighCount += (*this)(ybelow, xright);
-
-    neighGrid.push_back(neighCount);
+    return neighCount;
 }
 
-void Conway::increaseNeighbourCount(int y, int x)
+void Conway::oneRow(int y)
 {
-    int xleft, xright, yabove, ybelow;
-
-    xleft = (x == 0) ? N - 1 : x - 1;
-    xright = (x == (N - 1)) ? 0 : x + 1;
-
-    yabove = (y == 0) ? N - 1 : y - 1;
-    ybelow = (y == (N - 1)) ? 0 : y + 1;
-
-    neighGrid2[xleft + N * yabove] += 1;
-    neighGrid2[x + N * yabove] += 1;
-    neighGrid2[xright + N * yabove] += 1;
-
-    neighGrid2[xleft + N * y] += 1;
-    neighGrid2[xright + N * y] += 1;
-
-    neighGrid2[xleft + N * ybelow] += 1;
-    neighGrid2[x + N * ybelow] += 1;
-    neighGrid2[xright + N * ybelow] += 1;
-}
-
-void Conway::decreaseNeighbourCount(int y, int x)
-{
-    int xleft, xright, yabove, ybelow;
-
-    xleft = (x == 0) ? N - 1 : x - 1;
-    xright = (x == (N - 1)) ? 0 : x + 1;
-
-    yabove = (y == 0) ? N - 1 : y - 1;
-    ybelow = (y == (N - 1)) ? 0 : y + 1;
-
-    neighGrid2[xleft + N * yabove] -= 1;
-    neighGrid2[x + N * yabove] -= 1;
-    neighGrid2[xright + N * yabove] -= 1;
-
-    neighGrid2[xleft + N * y] -= 1;
-    neighGrid2[xright + N * y] -= 1;
-
-    neighGrid2[xleft + N * ybelow] -= 1;
-    neighGrid2[x + N * ybelow] -= 1;
-    neighGrid2[xright + N * ybelow] -= 1;
-}
-
-void Conway::oneRow(int y, int k)
-{
-
-    for (int x = 0; x < N; x++)
+    for (int x = 0; x < N; ++x)
     {
-        if ((*this)(y, x) == 0)
-        {
-            //if the cell is dead and it has k+1 living neighbours, make it alive
-            if (neighGrid[y * N + x] == k + 1)
+        char neighCount = countNeighs(y, x); //Counting the living neighbours
+        std::cout << static_cast<int>(neighCount) <<" ";
 
-            {
-                (*this)(y, x) = true;
-                increaseNeighbourCount(y, x);
-            
-                #if WINDOWING
-                DrawCell(y, x, 0xFF); //color the cell on the canvas to white
-                #endif
-                //std::cout << y << " inc " << x << std::endl;
-            }
-        }
-        else
-        {
-            if ((neighGrid[y * N + x] != k) && (neighGrid[y * N + x] != k + 1))
-            {
-                (*this)(y, x) = false;
-                decreaseNeighbourCount(y, x);
+        if (grid[N * y + x] == 0 && (neighCount == 3)) { grid2[N * y + x] = 1; }
 
-                #if WINDOWING
-                DrawCell(y, x, 0x00); //color the cell on the canvas to black
-                #endif          
-                //std::cout << y << " dec " << x << std::endl;
-            }
-        }
+        if (grid[N * y + x] == 1 && ((neighCount != 3) && (neighCount != 2))) { grid2[N * y + x] = 0; }
+
     }
-
-        
 }
 
-void Conway::multiRow(int y_start, int y_end, int k)
+void Conway::multiRow(int y_start, int y_end)
 {
     for (; y_start < y_end; ++y_start)
     {
-        oneRow(y_start, k);
+        oneRow(y_start); 
     }
 }
 
 
-void Conway::oneStep(int k)
+void Conway::oneStep()
 {
-    neighGrid2 = neighGrid;
 
 #if MP
     std::thread threads[8];
+
     for (int thread_num = 0; thread_num < 8; ++thread_num)  //maximum number of 8 threads on this machine
     {
         int num_of_tasks = std::floor(N / 8);
         int y_start = thread_num * num_of_tasks;
-        int y_end = (thread_num + 1) * num_of_tasks;
-        threads[ thread_num ] = std::thread(&Conway::multiRow, this, y_start, y_end, k);
+        int y_end = ((thread_num + 1) * num_of_tasks) < (N - 1) ? ((thread_num + 1) * num_of_tasks) : (N - 1);
+        threads[ thread_num ] = std::thread(&Conway::multiRow, this, y_start, y_end);
     }
 
     for (int y = 0; y < 8; y++)
@@ -272,53 +195,14 @@ void Conway::oneStep(int k)
     }
     
 #else
-    for (int y = 0; y < N; y++) 
+    for (int y = 0; y < N; ++y) 
     {
-        for (int x = 0; x < N; x++)
-        {
-            if ((*this)(y, x) == 0)
-            {
-                //if the cell is dead and it has k+1 living neighbours, make it alive
-                if (neighGrid[y * N + x] == k + 1)
-
-                {
-                    (*this)(y, x) = 1;
-                    increaseNeighbourCount(y, x);
-                    #if WINDOWING
-                    DrawCell(y, x, 0xFF); //color the cell on the canvas to white
-                    #endif
-
-                }
-            }
-            else
-            {
-                if ((neighGrid[y * N + x] != k) && (neighGrid[y * N + x] != k + 1))
-                {
-                    (*this)(y, x) = 0;
-                    decreaseNeighbourCount(y, x);
-                    #if WINDOWING
-                    DrawCell(y, x, 0x00); //color the cell on the canvas to black
-                    #endif          
-                }
-            }
-}
+        oneRow(y);
+        std::cout << "q"<< std::endl;
     }
 #endif // MP
-
-    neighGrid = neighGrid2;
-}
-
-void Conway::printNeigh()
-{
-    for (int i = 0; i < N; i++)
-    {
-        for (int j = 0; j < N; j++)
-        {
-            std::cout << neighGrid[i * N + j] << " ";
-        }
-        std::cout << "\n";
-    }
-    std::cout << "\n";
+    std::cout << std::endl;
+    grid = grid2;
 }
 
 
@@ -337,22 +221,31 @@ int main(int argc, char* argv[])
                                 0,0,0,0,0,0,0,0,0,0,
                                 0,0,0,0,0,0,0,0,0,0,
                                 0,0,0,0,0,0,0,0,0,0};
-
-
-
+    
     int n = 10;
 
     Conway cnw(n, v);
     
     std::ofstream ofile("cnw_visu.txt");
+    std::ofstream times("times.txt");
+    std::cout << cnw;
+    //cnw.printGrid2();
 
-    for (int q = 0; q < 30; ++q)
+
+
+    
+
+    for (int q = 0; q < 20; ++q)
     {
         auto t1 = tmark();
-        cnw.oneStep(2);
+        cnw.oneStep();
         auto t2 = tmark();
         std::cout << delta_time(t1, t2) << std::endl;
+        
         std::cout << cnw;
+
+        times << delta_time(t1, t2) << std::endl;
+        ofile << cnw;
     }
     ofile.close();
     
