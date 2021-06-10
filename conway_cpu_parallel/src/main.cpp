@@ -63,7 +63,7 @@ public:
     Conway(int n, double p1);
     Conway(int n, std::vector<char>& v);
     
-    char& countNeighs(int y, int x);
+    char countNeighs(int y, int x);
     void oneRow(int y); //y - index of row
     void multiRow(int y_start, int y_end);
     void oneStep();
@@ -120,7 +120,7 @@ Conway::Conway(int n, std::vector<char>& v)
     std::copy(grid.begin(), grid.end(), std::back_inserter(grid2));
 }
 
-char& Conway::countNeighs(int y, int x)
+char Conway::countNeighs(int y, int x)
 {
     // Loop unrolling
     char neighCount = 0;
@@ -237,7 +237,7 @@ int main(int argc, char* argv[])
     //cnw.printGrid2();
 
 
-    fdsafdsa
+
 
     //times << m <<",";
 
