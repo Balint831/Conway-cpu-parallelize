@@ -9,7 +9,7 @@
 
 
 #define WINDOWING 0 //if 0, the grid is not visualized, if 1, a window is created
-#define MP 1 //multiprocessing
+#define MP 0 //multiprocessing
 
 // Limit loop rate for visibility
 #define LIMIT_RATE 0
@@ -51,15 +51,6 @@ void DrawCell(int x, int y, unsigned int color)
 }
 #endif //endif of windowing
 
-
-int rollCellState(double p1)
-{
-    // Generate a 0 or 1 randomly. 
-    // Seed is the current time, p1 is probability of choosing 1.
-    double random_variable = static_cast<double>(std::rand()) / RAND_MAX;
-    if (random_variable > p1) { return 0; }
-    else return 1;
-}
 
 struct Conway
 {
@@ -109,13 +100,13 @@ void Conway::printGrid2()
 Conway::Conway(int n, double p1)
 {
     N = n;
-    std::vector<char> g;
+    std::vector<char> g(n * n);
 
     std::random_device rd;
     std::mt19937 gen(rd());
     std::discrete_distribution<> d({ 1- p1, 1 });
 
-    std::generate_n(std::back_inserter(g), n * n, [&] { return d(gen); });
+    std::generate(g.begin(), g.end(), [&] { return d(gen); });
     
     grid = std::move(g);
 
@@ -199,7 +190,6 @@ void Conway::oneStep()
     for (int y = 0; y < N; ++y) 
     {
         oneRow(y);
-        std::cout << "q"<< std::endl;
     }
 #endif // MP
     std::cout << std::endl;
@@ -211,7 +201,7 @@ int main(int argc, char* argv[])
 {
 
     //init grid from a vector
-    std::vector<char> v = {     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    std::vector<char> v = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
                                 0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
                                 0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
                                 0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -222,43 +212,53 @@ int main(int argc, char* argv[])
                                 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
                                 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
                                 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-                                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  
-                                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 
-                                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 
-                                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 
-                                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 
-                                0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 
-                                0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 
+                                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                                0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                                0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
                                 0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
                                 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     };
-    
-    int n = 20;
 
+    //std::ofstream times("0.txt");
+
+    int n = 20;
+    //std::vector<int> n_arr = { 30, 50, 100, 150, 200, 300, 400, 500, 600, 700, 800, 1000, 1500, 2000, 2500, 3000, 5000, 10000, 15000, 20000 };
+    //for (auto m:  n_arr)
+    //{       
     Conway cnw(n, v);
-    
-    std::ofstream ofile("cnw_visu.txt");
-    std::ofstream times("times.txt");
-    std::cout << cnw;
+
+    //std::ofstream ofile("cnw_visu.txt");
+        
+    //std::cout << cnw;
     //cnw.printGrid2();
 
 
+    fdsafdsa
 
-    
+    //times << m <<",";
 
-    for (int q = 0; q < 600; ++q)
+    for (int q = 0; q < 10; ++q)
     {
         auto t1 = tmark();
         cnw.oneStep();
         auto t2 = tmark();
         std::cout << delta_time(t1, t2) << std::endl;
-        
+
+        std::cout << cnw;
+
         //std::cout << cnw;
 
-        times << delta_time(t1, t2) << std::endl;
-        ofile << cnw;
+        //times << delta_time(t1, t2) << ",";
+        //ofile << cnw;
     }
-    ofile.close();
+    //times << std::endl;
+    //}
+    //ofile.close();
+    //times.close();
     
     #if WINDOWING
     SDL_Init(SDL_INIT_VIDEO);
